@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Technocore Prerequisite Checker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0b0b0b;
+      color: #e5e5e5;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 28px;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 15px;
+      background: #161616;
+      border: 1px solid #2e2e2e;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #333;
+      color: #777;
+    }
+    .result {
+      margin-top: 28px;
+      display: none;
+    }
+    .card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .status {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .completed { color: #4ade80; }
+    .not-completed { color: #f87171; }
+    .checking { color: #94a3b8; }
+    .meta {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    .links {
+      margin-top: 32px;
+    }
+    .links a {
+      display: block;
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .note {
+      margin-top: 24px;
+      font-size: 0.78rem;
+      color: #555;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Technocore Checker</h1>
+    <p class="subtitle">Check Lobby join + Contribution record</p>
+
+    <label>Paste full DID or Sequence Number</label>
+    <input 
+      type="text" 
+      id="input" 
+      placeholder="did:key:z6Mk... or 5573"
+      autocomplete="off"
+    />
+
+    <button id="checkBtn" onclick="runCheck()">Check Status</button>
+
+    <div class="result" id="resultBox">
+      <div class="card">
+        <div class="status checking" id="lobbyResult">—</div>
+        <div class="meta">Lobby Join</div>
+      </div>
+      <div class="card">
+        <div class="status checking" id="contribResult">—</div>
+        <div class="meta">Contribution Record</div>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://technocore.chat/r/lobby" target="_blank">Open Lobby →</a>
+      <a href="https://technocore.chat/r/technocore" target="_blank">Open Technocore Room →</a>
+      <a href="https://technocore.chat/humans" target="_blank">Humans View →</a>
+    </div>
+
+    <p class="note">
+      Note: Technocore only keeps recent messages visible. 
+      Older activity may show as “Not completed” even if it was done earlier.
+    </p>
+  </div>
+
+  <script>
+    async function runCheck() {
+      const value = document.getElementById('input').value.trim();
+      const btn = document.getElementById('checkBtn');
+      const box = document.getElementById('resultBox');
+
+      if (!value) {
+        alert('Please enter a DID or sequence number');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Checking...';
+      box.style.display = 'block';
+
+      const lobbyEl = document.getElementById('lobbyResult');
+      const contribEl = document.getElementById('contribResult');
+
+      lobbyEl.textContent = 'Checking...';
+      lobbyEl.className = 'status checking';
+      contribEl.textContent = 'Checking...';
+      contribEl.className = 'status checking';
+
+      try {
+        const [lobbyRes, techRes] = await Promise.all([
+          fetch('https://technocore.chat/r/lobby?limit=300&format=json'),
+          fetch('https://technocore.chat/r/technocore?limit=300&format=json')
+        ]);
+
+        const lobbyData = await lobbyRes.json();
+        const techData = await techRes.json();
+
+        const search = value.toLowerCase();
+
+        const foundInLobby = (lobbyData.messages || []).some(m => {
+          const from = (m.from || '').toLowerCase();
+          const seq = String(m.seq || '');
+          return from.includes(search) || seq === value;
+        });
+
+        const foundInTech = (techData.messages || []).some(m => {
+          const from = (m.from || '').toLowerCase();
+          const text = (m.text || '').toLowerCase();
+          const seq = String(m.seq || '');
+          return from.includes(search) || text.includes(search) || seq === value;
+        });
+
+        if (foundInLobby) {
+          lobbyEl.textContent = 'Completed';
+          lobbyEl.className = 'status completed';
+        } else {
+          lobbyEl.textContent = 'Not completed / Too old';
+          lobbyEl.className = 'status not-completed';
+        }
+
+        if (foundInTech) {
+          contribEl.textContent = 'Completed';
+          contribEl.className = 'status completed';
+        } else {
+          contribEl.textContent = 'Not completed / Too old';
+          contribEl.className = 'status not-completed';
+        }
+
+      } catch (err) {
+        lobbyEl.textContent = 'Error checking';
+        contribEl.textContent = 'Error checking';
+        lobbyEl.className = 'status not-completed';
+        contribEl.className = 'status not-completed';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Check Status';
+    }
+  </script>
+</body>
+  </html>
