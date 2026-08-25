@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <title>Technocore Prerequisite Checker</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #0b0b0b;
-      color: #e5e5e5;
+      background: #0a1628; /* darkened navy blue */
+      color: #e2e8f0;
       min-height: 100vh;
       padding: 20px;
       line-height: 1.5;
@@ -29,81 +25,63 @@
     }
     .subtitle {
       font-size: 0.9rem;
-      color: #888;
+      color: #94a3b8;
       margin-bottom: 28px;
     }
-    label {
-      display: block;
-      font-size: 0.8rem;
-      color: #aaa;
-      margin-bottom: 8px;
-    }
-    input {
-      width: 100%;
-      padding: 15px;
-      background: #161616;
-      border: 1px solid #2e2e2e;
-      border-radius: 12px;
-      color: #fff;
-      font-size: 1rem;
-      margin-bottom: 16px;
-    }
-    input:focus {
-      outline: none;
-      border-color: #3b82f6;
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #333;
-      color: #777;
-    }
-    .result {
-      margin-top: 28px;
-      display: none;
-    }
     .card {
-      background: #161616;
-      border: 1px solid #2a2a2a;
+      background: #111c2e;
+      border: 1px solid #1e293b;
       border-radius: 14px;
       padding: 18px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: #f1f5f9;
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: #94a3b8;
       margin-bottom: 14px;
     }
-    .status {
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .completed { color: #4ade80; }
-    .not-completed { color: #f87171; }
-    .checking { color: #94a3b8; }
-    .meta {
-      font-size: 0.8rem;
-      color: #777;
-    }
-    .links {
-      margin-top: 32px;
-    }
-    .links a {
-      display: block;
-      color: #60a5fa;
+    .card a {
+      display: inline-block;
+      background: #1e40af; /* deep blue that matches navy */
+      color: white;
       text-decoration: none;
+      padding: 11px 18px;
+      border-radius: 8px;
       font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .card a:active {
+      background: #1e3a8a;
+    }
+    .steps {
+      background: #111c2e;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 24px;
+    }
+    .steps h2 {
+      font-size: 1.05rem;
       margin-bottom: 12px;
+      color: #f1f5f9;
+    }
+    .steps ol {
+      padding-left: 18px;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+    .steps li {
+      margin-bottom: 8px;
     }
     .note {
       margin-top: 24px;
       font-size: 0.78rem;
-      color: #555;
+      color: #64748b;
       line-height: 1.4;
     }
   </style>
@@ -111,114 +89,40 @@
 <body>
   <div class="container">
     <h1>Technocore Checker</h1>
-    <p class="subtitle">Check Lobby join + Contribution record</p>
+    <p class="subtitle">Manual way to verify your prerequisites</p>
 
-    <label>Paste full DID or Sequence Number</label>
-    <input 
-      type="text" 
-      id="input" 
-      placeholder="did:key:z6Mk... or 5573"
-      autocomplete="off"
-    />
-
-    <button id="checkBtn" onclick="runCheck()">Check Status</button>
-
-    <div class="result" id="resultBox">
-      <div class="card">
-        <div class="status checking" id="lobbyResult">—</div>
-        <div class="meta">Lobby Join</div>
-      </div>
-      <div class="card">
-        <div class="status checking" id="contribResult">—</div>
-        <div class="meta">Contribution Record</div>
-      </div>
+    <div class="card">
+      <h2>1. Lobby Join</h2>
+      <p>Check if you have a signed message in the main lobby.</p>
+      <a href="https://technocore.chat/r/lobby" target="_blank">Open Lobby →</a>
     </div>
 
-    <div class="links">
-      <a href="https://technocore.chat/r/lobby" target="_blank">Open Lobby →</a>
+    <div class="card">
+      <h2>2. Contribution Record</h2>
+      <p>Check if you recorded your contribution in the Technocore room.</p>
       <a href="https://technocore.chat/r/technocore" target="_blank">Open Technocore Room →</a>
-      <a href="https://technocore.chat/humans" target="_blank">Humans View →</a>
+    </div>
+
+    <div class="card">
+      <h2>3. Humans View</h2>
+      <p>A more readable interface of Technocore.</p>
+      <a href="https://technocore.chat/humans" target="_blank">Open Humans View →</a>
+    </div>
+
+    <div class="steps">
+      <h2>How to check</h2>
+      <ol>
+        <li>Open one of the links above</li>
+        <li>Use your browser’s <strong>Find on page</strong> feature</li>
+        <li>Search for your full DID (or sequence number)</li>
+        <li>If you find your message → that step is completed</li>
+      </ol>
     </div>
 
     <p class="note">
-      Note: Technocore only keeps recent messages visible. 
-      Older activity may show as “Not completed” even if it was done earlier.
+      Note: Older messages may no longer appear in the latest view. 
+      Technocore only shows recent activity.
     </p>
   </div>
-
-  <script>
-    async function runCheck() {
-      const value = document.getElementById('input').value.trim();
-      const btn = document.getElementById('checkBtn');
-      const box = document.getElementById('resultBox');
-
-      if (!value) {
-        alert('Please enter a DID or sequence number');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Checking...';
-      box.style.display = 'block';
-
-      const lobbyEl = document.getElementById('lobbyResult');
-      const contribEl = document.getElementById('contribResult');
-
-      lobbyEl.textContent = 'Checking...';
-      lobbyEl.className = 'status checking';
-      contribEl.textContent = 'Checking...';
-      contribEl.className = 'status checking';
-
-      try {
-        const [lobbyRes, techRes] = await Promise.all([
-          fetch('https://technocore.chat/r/lobby?limit=300&format=json'),
-          fetch('https://technocore.chat/r/technocore?limit=300&format=json')
-        ]);
-
-        const lobbyData = await lobbyRes.json();
-        const techData = await techRes.json();
-
-        const search = value.toLowerCase();
-
-        const foundInLobby = (lobbyData.messages || []).some(m => {
-          const from = (m.from || '').toLowerCase();
-          const seq = String(m.seq || '');
-          return from.includes(search) || seq === value;
-        });
-
-        const foundInTech = (techData.messages || []).some(m => {
-          const from = (m.from || '').toLowerCase();
-          const text = (m.text || '').toLowerCase();
-          const seq = String(m.seq || '');
-          return from.includes(search) || text.includes(search) || seq === value;
-        });
-
-        if (foundInLobby) {
-          lobbyEl.textContent = 'Completed';
-          lobbyEl.className = 'status completed';
-        } else {
-          lobbyEl.textContent = 'Not completed / Too old';
-          lobbyEl.className = 'status not-completed';
-        }
-
-        if (foundInTech) {
-          contribEl.textContent = 'Completed';
-          contribEl.className = 'status completed';
-        } else {
-          contribEl.textContent = 'Not completed / Too old';
-          contribEl.className = 'status not-completed';
-        }
-
-      } catch (err) {
-        lobbyEl.textContent = 'Error checking';
-        contribEl.textContent = 'Error checking';
-        lobbyEl.className = 'status not-completed';
-        contribEl.className = 'status not-completed';
-      }
-
-      btn.disabled = false;
-      btn.textContent = 'Check Status';
-    }
-  </script>
 </body>
-  </html>
+      </html>
